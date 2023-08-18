@@ -1,11 +1,13 @@
-package com.mytest.somwhere
+package com.mytest.app
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.cache.annotation.EnableCaching
 
+@EnableCaching
 @SpringBootApplication
-class SomwhereApplication
+class TestApplication
 
 fun main(args: Array<String>) {
-	runApplication<SomwhereApplication>(*args)
+	runApplication<TestApplication>(*args)
 }

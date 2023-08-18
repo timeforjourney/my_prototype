@@ -1,10 +1,10 @@
-package com.mytest.somwhere
+package com.mytest.app
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest
-class SomwhereApplicationTests {
+class TestApplicationTests {
 
 	@Test
 	fun contextLoads() {

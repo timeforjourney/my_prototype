@@ -8,14 +8,22 @@ server:
 #    level : 6
 
 spring:
-  mvc:
-    cors :
-      mapping: /api/**
-      allowed-origins: http://localhost:3000
-      allowed-methods: GET, POST, PUT, DELETE, PATCH
-      allowed-headers: "*"
-      allow-credentials: true
-      max-age: 3600
+#  mvc:
+#    cors :
+#      mapping: /api/**
+#      allowed-origins: http://localhost:3000
+#      allowed-methods: GET, POST, PUT, DELETE, PATCH
+#      allowed-headers: "*"
+#      allow-credentials: true
+#      max-age: 3600
+  logging:
+    level:
+      org.springframework.boot: info
+#      org.springframework.webflux: info
+      org.springframework.web.reactive.function.client: debug
+      com.mytest.app: info
+#      com.zaxxer.hikari: debug
+#org.springframework.web.reactive.function.client
   data:
     web:
       pageable:
@@ -27,6 +35,17 @@ spring:
           page-size: 20
 #          sort: id,desc
 
+
+management:
+  endpoint:
+    health:
+      enabled: true
+    group :
+      custom:
+        include: health,info
+      web:
+        enabled: true
+#        roles: ADMIN
 
 
 

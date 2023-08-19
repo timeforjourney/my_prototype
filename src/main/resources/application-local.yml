@@ -13,25 +13,7 @@ spring:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
 
-  logging:
-    level :
-      org.springframework.boot : info
-      com.mytest.somewhere: info
-      com.zaxxer.hikari: debug
-      #      org.springframework.transaction: trace
-      org.hibernate:
-        transaction.JDBCTransaction: debug
 
-management:
-  endpoint:
-    health:
-      enabled: true
-    group :
-      custom:
-        include: health,info
-      web:
-        enabled: true
-        roles: ADMIN
 
 
 

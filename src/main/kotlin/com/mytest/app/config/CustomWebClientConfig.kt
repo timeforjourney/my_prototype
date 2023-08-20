@@ -26,7 +26,7 @@ class CustomWebClientConfig {
 	@Bean
 	fun customWebClient(): WebClient {
 
-		val exchangeStrategies = ExchangeStrategies.builder()
+            		val exchangeStrategies = ExchangeStrategies.builder()
 				.codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50) }
 				.build()
 

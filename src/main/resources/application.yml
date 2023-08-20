@@ -16,14 +16,11 @@ spring:
 #      allowed-headers: "*"
 #      allow-credentials: true
 #      max-age: 3600
-  logging:
-    level:
-      org.springframework.boot: info
-#      org.springframework.webflux: info
-      org.springframework.web.reactive.function.client: debug
-      com.mytest.app: info
-#      com.zaxxer.hikari: debug
-#org.springframework.web.reactive.function.client
+#  logging:
+#    level:
+#      org.springframework.boot: debug
+#      org.springframework.web.reactive.function.client: debug
+#      com.mytest.app: info
   data:
     web:
       pageable:

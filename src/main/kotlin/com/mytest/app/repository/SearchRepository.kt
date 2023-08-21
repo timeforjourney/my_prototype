@@ -1,5 +1,7 @@
 package com.mytest.app.repository
 
+import com.mytest.app.domain.KakaoResponse
+import com.mytest.app.domain.NaverResponse
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -17,10 +19,8 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 	@Value("\${openapi.kakao.url}")
 	lateinit var kakaoApiUrl : String
 
-
 	@Value("\${openapi.kakao.auth}")
 	lateinit var kakaoApiAuth : String
-
 
 	@Value("\${openapi.naver.url}")
 	lateinit var naverUrl : String
@@ -31,13 +31,14 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 	@Value("\${openapi.naver.client-secret}")
 	lateinit var naverClientSecret : String
 
-
 	@Value("\${openapi.naver.host}")
 	lateinit var naverHost : String
 
 
-
-	fun getKakaoSearchResult(keyword : String , page : String, size : String ): Mono<String> {
+	/**
+	 * 카카오 검색 API
+	 */
+	fun getKakaoSearchResult(keyword : String , page : String, size : String ): Mono<KakaoResponse> {
 
 		val customWebClient = webClient.mutate()
 				.baseUrl(kakaoApiUrl)
@@ -54,12 +55,15 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 				}
 				.accept(MediaType.APPLICATION_JSON)
 				.retrieve()
-				.bodyToMono(String::class.java)
+				.bodyToMono(KakaoResponse::class.java)
 				.onErrorResume { Mono.error(it) }
 	}
 
 
-	fun getNaverSearchResult(keyword : String , page : String, size : String ): Mono<String> {
+	/**
+	 * 네이버 검색 API
+	 */
+	fun getNaverSearchResult(keyword : String , page : String, size : String ): Mono<NaverResponse> {
 
 		val headers = mapOf<String, String> (
 			"Host" to naverHost,
@@ -72,6 +76,8 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			.defaultHeaders { header -> header.setAll(headers)}
 			.build()
 
+		val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
+//		.encodeURIComponent(keyword)
 		return customWebClient.get()
 			.uri { uriBuilder ->
 				uriBuilder
@@ -82,7 +88,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			}
 			.accept(MediaType.APPLICATION_JSON)
 			.retrieve()
-			.bodyToMono(String::class.java)
+			.bodyToMono(NaverResponse::class.java)
 			.onErrorResume { Mono.error(it) }
 	}
 

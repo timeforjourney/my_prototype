@@ -1,5 +1,7 @@
 package com.mytest.app.controller
 
+import com.mytest.app.domain.KakaoResponse
+import com.mytest.app.domain.NaverResponse
 import com.mytest.app.service.SearchService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -20,7 +22,7 @@ class SearchController(private val searchService: SearchService) {
 		@RequestParam("keyword") keyword: String,
 		@RequestParam("page" , required = false, defaultValue = "1") page: String,
 		@RequestParam("size", required = false, defaultValue = "10") size: String,
-	): Mono<String> {
+	): Mono<KakaoResponse> {
 		return searchService.searchKakaoResult(keyword, page, size)
 	}
 
@@ -31,7 +33,7 @@ class SearchController(private val searchService: SearchService) {
 		@RequestParam("keyword") keyword: String,
 		@RequestParam("page", required = false, defaultValue = "1") page: String,
 		@RequestParam("size", required = false, defaultValue = "10") size: String
-	): Mono<String> {
+	): Mono<NaverResponse> {
 		return searchService.searchNaverResult(keyword, page, size)
 	}
 }

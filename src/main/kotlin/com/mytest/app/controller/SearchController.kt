@@ -1,37 +1,38 @@
 package com.mytest.app.controller
 
+import com.mytest.app.domain.SearchResult
 import com.mytest.app.service.SearchService
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/api")
 class SearchController(private val searchService: SearchService) {
 
+	private val logger = LoggerFactory.getLogger(this::class.java)
+
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/kakao")
-	fun kakaoMap(
+	@GetMapping("/result")
+	suspend fun result(
 		@RequestParam("keyword") keyword: String,
-		@RequestParam("page" , required = false, defaultValue = "1") page: String,
-		@RequestParam("size", required = false, defaultValue = "10") size: String,
-	): Mono<String> {
-		return searchService.searchKakaoResult(keyword, page, size)
+		@RequestParam("rank") rank: String,
+		@RequestParam("page", required = false, defaultValue = "1") page: String,
+		@RequestParam("size", required = false, defaultValue = "10") size: String
+	) : Mono<SearchResult> {
+
+		return searchService.sortSearchResult(keyword, rank , page, size)
 	}
 
 
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/naver")
-	fun naverMap(
-		@RequestParam("keyword") keyword: String,
-		@RequestParam("page", required = false, defaultValue = "1") page: String,
-		@RequestParam("size", required = false, defaultValue = "10") size: String
-	): Mono<String> {
-		return searchService.searchNaverResult(keyword, page, size)
+	@GetMapping("/zsetScores")
+	suspend fun zsetScores(
+		@RequestParam("key") keyword: String
+	) : Flux<Any> {
+		return  searchService.getZsetValues(keyword)
 	}
 }

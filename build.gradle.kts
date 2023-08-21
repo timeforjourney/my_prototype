@@ -21,32 +21,23 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
-	implementation("io.projectreactor.addons:reactor-extra")
+//	implementation("io.projectreactor.addons:reactor-extra")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.+")
 
-
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
+//	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib")
-
-//	implementation("org.springframework.boot:spring-boot-starter-web"){
-//		exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat")
-//	}
-
-//	implementation("org.springframework.boot:spring-boot-starter-undertow")
+//	implementation("org.jetbrains.kotlin:kotlin-stdlib")
 
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-cache")
-	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("io.projectreactor:reactor-test")
 
-
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	compileOnly("io.projectreactor:reactor-tools:")
 }
 
 tasks.withType<KotlinCompile> {

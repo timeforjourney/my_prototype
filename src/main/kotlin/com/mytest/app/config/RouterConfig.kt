@@ -12,17 +12,15 @@ import org.springframework.web.reactive.function.server.router
 import java.time.Duration
 
 
-@Configuration
+//@Configuration
 class RouterConfig {
 
-    @Bean
-    fun route() = router {
-        "/api".nest {
-            accept(MediaType.APPLICATION_JSON).nest {
-                GET("/hello") { ok().bodyValue("Hello, WebFlux!") }
-            }
-        }
-    }
-
-
+//    @Bean
+//    fun route() = router {
+//        "/api".nest {
+//            accept(MediaType.APPLICATION_JSON).nest {
+//                GET("/hello") { ok().bodyValue("Hello, WebFlux!") }
+//            }
+//        }
+//    }
 }

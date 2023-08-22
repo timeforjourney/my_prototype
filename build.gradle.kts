@@ -22,6 +22,8 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("io.projectreactor.addons:reactor-extra")
+//	implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.+")
 
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -39,7 +41,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-cache")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-//	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -47,6 +48,9 @@ dependencies {
 
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+	compileOnly("io.projectreactor:reactor-tools:")
+
 }
 
 tasks.withType<KotlinCompile> {

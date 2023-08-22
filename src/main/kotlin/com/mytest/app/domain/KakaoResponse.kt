@@ -1,19 +1,22 @@
 package com.mytest.app.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonProperty
 
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoResponse(
 
-	val documents : List<Document>
+	@JsonProperty("documents")
+	val documents : List<Document>?
 )
 {
+
+	@JsonIgnoreProperties(ignoreUnknown = true)
 	data class Document(
-		val place_name : String?,
-//		val address_name : String?,
-//		val road_address_name : String?,
-//		val x : String?,
-//		val y : String?,
+
+//		@SerialName("place_name")
+		@JsonProperty("place_name")
+		val placeName : String
 	)
 }

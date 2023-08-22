@@ -36,4 +36,11 @@ class SearchController(private val searchService: SearchService) {
 	): Mono<NaverResponse> {
 		return searchService.searchNaverResult(keyword, page, size)
 	}
+
+
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/result")
+	fun result() : Mono<List<Int>>{
+		return searchService.sortSearchResult("판교노래방", "1", "10")
+	}
 }

@@ -11,5 +11,7 @@ import org.springframework.scheduling.annotation.EnableAsync
 class TestApplication
 
 fun main(args: Array<String>) {
+
+//	ReactorDebugAgent.init()
 	runApplication<TestApplication>(*args)
 }

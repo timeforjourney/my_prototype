@@ -2,6 +2,7 @@ package com.mytest.app.service
 
 import com.mytest.app.domain.KakaoResponse
 import com.mytest.app.domain.NaverResponse
+import com.mytest.app.domain.SearchResult
 import com.mytest.app.repository.SearchRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -34,75 +35,49 @@ class SearchService(
 	}
 
 
-	fun sortSearchResult(keyword: String, page: String, size : String): Mono<List<Int>> {
-
-//		val kList = searchRepository.getKakaoSearchResult(keyword, page, size)
-//		val nList = searchRepository.getNaverSearchResult(keyword, page, size)
-//
-//		Mono.zip(kList, nList)
-//			.subscribeOn(Schedulers.parallel())
-//			.map { it.t1.documents!!.map { it.placeName }
-//				.intersect(it.t2.items!!.map { it.title }) }
-//			.flatMap { Mono.just(it) }
-//			.subscribe { it.forEach { logger.info(it.toString()) } }
-
-
+	fun sortSearchResult(keyword: String, page: String, size: String): Mono<SearchResult> {
 
 		val kakaoList = searchRepository.getKakaoSearchResult(keyword, page, size)
-				.map { it.documents }
-
+			.map { it.documents }
 
 		val naverList = searchRepository.getNaverSearchResult(keyword, page, size)
-				.map { it.items }
+			.map { it.items }
 
-		Mono.zip(kakaoList, naverList)
-			.subscribeOn(Schedulers.parallel())
-			.map { it.t1.map { it.placeName }
-				.intersect(it.t2.map { it.title }) }
+		val commonList = Mono.zip(kakaoList, naverList)
+			.map {
+				it.t1.map { it.placeName }
+					.intersect(it.t2.map { it.title })
+			}
 			.flatMap { Mono.just(it) }
-			.subscribe { it.forEach { logger.info("--> sub 1 : {}",it.toString()) } }
 
-		Mono.zip(kakaoList, naverList)
-			.subscribeOn(Schedulers.parallel())
-			.map{
+		val kakaos = Mono.zip(kakaoList, commonList)
+			.map {
 				it.t1.map { it.placeName }
-					.intersect(it.t2.map { it.title })
-					.map { it1 -> it.t1.indexOfFirst { it.placeName == it1 } }
+					.subtract(it.t2)
 			}
-			.subscribe{ it.forEach { logger.info("--> sub2 : {}",it.toString()) } }
+			.flatMap { Mono.just(it) }
+
+		val navers = Mono.zip(naverList, commonList)
+			.map {
+				it.t1.map { it.title }
+					.subtract(it.t2)
+			}
+			.flatMap { Mono.just(it) }
+
+		val mergeValues = Mono.zip(commonList, kakaos, navers)
+			.map { it.t1.plus(it.t2).plus(it.t3) }
+			.flatMap { Mono.just(it) }
 
 
-		val commonMonoList: Mono<List<Int>> = Mono.zip(kakaoList, naverList)
+		val result = mergeValues
 			.subscribeOn(Schedulers.parallel())
-			.map{
-				it.t1.map { it.placeName }
-					.intersect(it.t2.map { it.title })
-					.map { it1 -> it.t1.indexOfFirst { it.placeName == it1 } }
-			}
-		return commonMonoList
+			.flatMap { titles ->
+			val titleObjects = titles.map { it?.let { it1 -> SearchResult.Title(it1) } }
+			Mono.just(SearchResult(titleObjects))
+		}
 
-//		 kakaoList.zipWith(naverList)
-//			.subscribe({
-//				it.t1.forEach { it1 ->
-//					it.t2.forEach { it2 ->
-//						if (it1.placeName == it2.title) {
-//							result += it1.placeName + "\n"
-//						}
-//					}
-//				}
-//			}, { it.printStackTrace() }, {
-//				logger.info(result)
-//			})
+		return result
 
-//			.map { it.t1.plus(it.t2) }
-
-//			.filter({ it.t1.isNotEmpty() && it.t2.isNotEmpty() })
-
-//			.map { (it.t, it.t2) -> it.t1.filter(it.t1 in t2) }
-//			.map { (it.t1, it.t2) -> it.t1.filter(it.t1 in t2) }
-//				.map { it.t1.plus(it.t2) }
-//				.map { it.sortedBy { it.title } }
-//				.subscribe { it.forEach { log.info(it.title) } }
 	}
 }
 

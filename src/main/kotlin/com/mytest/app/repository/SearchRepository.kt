@@ -51,7 +51,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 				uriBuilder
 					.queryParam("query", keyword)
 					.queryParam("page", page)
-					.queryParam("size", size)
+					.queryParam("size", "5")
 					.build()
 			}
 			.accept(MediaType.APPLICATION_JSON)
@@ -78,14 +78,13 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			.defaultHeaders { header -> header.setAll(headers) }
 			.build()
 
-		val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
-//		.encodeURIComponent(keyword)
+//		val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
 		return customWebClient.get()
 			.uri { uriBuilder ->
 				uriBuilder
 					.queryParam("query", keyword)
 					.queryParam("start", page)
-					.queryParam("display", size)
+					.queryParam("display", "5")
 					.build()
 			}
 			.accept(MediaType.APPLICATION_JSON)

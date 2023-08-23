@@ -12,6 +12,5 @@ class TestApplication
 
 fun main(args: Array<String>) {
 
-//	ReactorDebugAgent.init()
 	runApplication<TestApplication>(*args)
 }

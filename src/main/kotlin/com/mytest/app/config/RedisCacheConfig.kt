@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
-import org.springframework.data.redis.core.ReactiveRedisOperations
 import org.springframework.data.redis.core.ReactiveRedisTemplate
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
-import org.springframework.data.redis.serializer.*
-import org.springframework.data.redis.serializer.RedisSerializationContext.RedisSerializationContextBuilder
+import org.springframework.data.redis.serializer.GenericToStringSerializer
+import org.springframework.data.redis.serializer.RedisSerializationContext
+import org.springframework.data.redis.serializer.StringRedisSerializer
 
 
 @Configuration
@@ -30,11 +30,6 @@ class RedisCacheConfig {
 	private val redisPort: Int? = 6379
 
 
-	@Value("\${spring.data.redis.database}")
-	private val database: Int? = 0
-
-
-
 	@Bean
 	fun reactiveRedisConnectionFactory(): ReactiveRedisConnectionFactory {
 
@@ -49,19 +44,6 @@ class RedisCacheConfig {
 	}
 
 
-//	@Bean
-//	fun redisOperations(reactiveRedisConnectionFactory: ReactiveRedisConnectionFactory?): ReactiveRedisOperations<String, Any>
-//	{
-//		val serializer: Jackson2JsonRedisSerializer<Any?> = Jackson2JsonRedisSerializer(Any::class.java)
-//
-//		val builder: RedisSerializationContextBuilder<String, Any> =
-//			RedisSerializationContext.newSerializationContext<String, Any>(StringRedisSerializer())
-//
-//		val context: RedisSerializationContext<String, Any> = builder
-//			.value(serializer)
-//			.build()
-//		return ReactiveRedisTemplate(reactiveRedisConnectionFactory!!, context)
-//	}
 
 
 	@Bean
@@ -72,8 +54,8 @@ class RedisCacheConfig {
 			.newSerializationContext<String, Any>(StringRedisSerializer())
 			.key(StringRedisSerializer())
 			.value(GenericToStringSerializer(Any::class.java))
-			.hashKey(StringRedisSerializer())
-			.hashValue(GenericJackson2JsonRedisSerializer())
+//			.hashKey(StringRedisSerializer())
+//			.hashValue(GenericJackson2JsonRedisSerializer())
 			.build()
 
 		return ReactiveRedisTemplate(reactiveRedisConnectionFactory!!, serializationContext)

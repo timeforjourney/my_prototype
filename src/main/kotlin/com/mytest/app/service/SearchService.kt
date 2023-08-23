@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
-import java.net.URLEncoder
 
 
 @Service
 class SearchService(
 	val searchRepository: SearchRepository,
-	val dataRedisRepository : DataRedisRepository
+	val dataRedisRepository: DataRedisRepository
 ) {
 
 	private val logger = LoggerFactory.getLogger(this::class.java)
@@ -49,37 +48,39 @@ class SearchService(
 
 		val mergeValues = mergeValuesFromWebClient(kakaoList, naverList)
 
-		logger.info("--------> getCount start")
+		logger.debug("--------> getCount start")
 
-		val inputKeyword = URLEncoder.encode(keyword, "UTF-8")
-		val count = dataRedisRepository.get(inputKeyword)
-
-		if(count == null ) {
-			dataRedisRepository.save(inputKeyword, 1)
-		}
-		else {
-			count
-				.flatMap { dataRedisRepository.save(inputKeyword, (it.toString().toInt() + 1)) }
-				.subscribeOn(Schedulers.single())
-				.onErrorResume { Mono.error(it) }
-				.subscribe { logger.info("--------> count : {}", it) }
-		}
-
-		//just log
 		dataRedisRepository.get(keyword)
-			.subscribe { logger.info("--------> count : {}", it)}
+			.flatMap { countValue ->
+				val newCount = (countValue.toString().toIntOrNull() ?: 0) + 1
+				dataRedisRepository.save(keyword, newCount).thenReturn(newCount)
+			}
+			.defaultIfEmpty(0) // Set default value if count is empty
+			.flatMap { currentCount ->
+				if (currentCount > 0) {
+					Mono.just(currentCount)
+				} else {
+					dataRedisRepository.save(keyword, 1).thenReturn(1)
+				}
+			}
+			.onErrorResume { Mono.error(it) }
+			.subscribe { logger.info("--------> count : {}", it) }
+
 
 
 		return mergeValues
 			.subscribeOn(Schedulers.single())
 			.flatMap { titles ->
-			val titleObjects = titles.map { it?.let { it1 -> SearchResult.Title(it1) } }
-			Mono.just(SearchResult(titleObjects))
-		}
+				val titleObjects = titles.map { it?.let { it1 -> SearchResult.Title(it1) } }
+				Mono.just(SearchResult(titleObjects))
+			}
 	}
 
-	suspend fun mergeValuesFromWebClient(kakaoList: Mono<List<KakaoResponse.Document>?>, naverList: Mono<List<NaverResponse.Item>?>)
-	: Mono<Set<String?>> {
+	suspend fun mergeValuesFromWebClient(
+		kakaoList: Mono<List<KakaoResponse.Document>?>,
+		naverList: Mono<List<NaverResponse.Item>?>
+	)
+		: Mono<Set<String?>> {
 
 		val commonList = Mono.zip(kakaoList, naverList)
 			.map {
@@ -117,7 +118,6 @@ class SearchService(
 	suspend fun saveKeyValue(keyword: String, value: Int): Mono<Boolean> {
 		return dataRedisRepository.save(keyword, value)
 	}
-
 
 
 	suspend fun getKeywordCount(keyword: String): Mono<Any> {

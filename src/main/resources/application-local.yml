@@ -1,5 +1,15 @@
+
 server:
   port: 8080
+
+spring.data.redis :
+  host: localhost
+  port: 6379
+  database: 0
+  lettuce:
+    shutdown-timeout: 1000
+#    pool:
+#      enabled: on
 
 
 openapi :
@@ -11,6 +21,7 @@ openapi :
     host : openapi.naver.com
     client-id : 6OqyW9SsVsdqXVX6BuYA
     client-secret : l5wD2lNYzf
+
 
 
 

@@ -39,7 +39,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 	/**
 	 * 카카오 검색 API
 	 */
-	fun getKakaoSearchResult(keyword: String, page: String, size: String): Mono<KakaoResponse> {
+	suspend fun getKakaoSearchResult(keyword: String, page: String, size: String): Mono<KakaoResponse> {
 
 		val customWebClient = webClient.mutate()
 			.baseUrl(kakaoApiUrl)
@@ -58,6 +58,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			.retrieve()
 			.bodyToMono(KakaoResponse::class.java)
 			.subscribeOn(Schedulers.parallel())
+			.switchIfEmpty(Mono.empty())
 			.onErrorResume { Mono.error(it) }
 	}
 
@@ -65,7 +66,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 	/**
 	 * 네이버 검색 API
 	 */
-	fun getNaverSearchResult(keyword: String, page: String, size: String): Mono<NaverResponse> {
+	suspend fun getNaverSearchResult(keyword: String, page: String, size: String): Mono<NaverResponse> {
 
 		val headers = mapOf<String, String>(
 			"Host" to naverHost,
@@ -78,7 +79,6 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			.defaultHeaders { header -> header.setAll(headers) }
 			.build()
 
-//		val encodedKeyword = java.net.URLEncoder.encode(keyword, "UTF-8")
 		return customWebClient.get()
 			.uri { uriBuilder ->
 				uriBuilder
@@ -92,6 +92,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			.bodyToMono(NaverResponse::class.java)
 			.subscribeOn(Schedulers.parallel())
 			.onErrorResume { Mono.error(it) }
+			.switchIfEmpty(Mono.empty())
 	}
 
 }

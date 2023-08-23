@@ -4,37 +4,19 @@ server:
   compression:
     enabled: true
     mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
-#    min-response-size: 1024
-#    level : 6
 
-spring:
-#  logging:
-#    level:
-#      org.springframework.boot: info
-#      org.springframework.web.reactive.function.client: debug
-#      com.mytest.app: info
-  data:
-    web:
-      pageable:
-        max-page-size: 30
-        default-page-size: 20
-        #        size-parameter: pageSize
-        #        offset-parameter: page
-        fallback-pageable:
-          page-size: 20
-#          sort: id,desc
 
 
 management:
   endpoint:
+    web:
+      exposure:
+        include: metrics,health,info
     health:
       enabled: true
     group :
       custom:
         include: health,info
-      web:
-        enabled: true
-#        roles: ADMIN
 
 
 

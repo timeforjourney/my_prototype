@@ -39,7 +39,7 @@ class SearchServiceTest (
 
 
     @Test
-    fun sortSearchResult() {
+    suspend fun sortSearchResult() {
 
         val kakaoList = searchRepository.getKakaoSearchResult(keyword, page, size)
            .map { it.documents }

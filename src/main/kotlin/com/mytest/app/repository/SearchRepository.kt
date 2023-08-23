@@ -2,6 +2,9 @@ package com.mytest.app.repository
 
 import com.mytest.app.domain.KakaoResponse
 import com.mytest.app.domain.NaverResponse
+import com.mytest.app.domain.constant.CountConstant
+import com.mytest.app.domain.constant.SearchConstant
+import kotlinx.coroutines.coroutineScope
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -39,19 +42,19 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 	/**
 	 * 카카오 검색 API
 	 */
-	suspend fun getKakaoSearchResult(keyword: String, page: String, size: String): Mono<KakaoResponse> {
+	suspend fun getKakaoSearchResult(keyword: String, page: String, size: String): Mono<KakaoResponse> = coroutineScope {
 
 		val customWebClient = webClient.mutate()
 			.baseUrl(kakaoApiUrl)
 			.defaultHeader(HttpHeaders.AUTHORIZATION, kakaoApiAuth)
 			.build()
 
-		return customWebClient.get()
+		return@coroutineScope customWebClient.get()
 			.uri { uriBuilder ->
 				uriBuilder
-					.queryParam("query", keyword)
-					.queryParam("page", page)
-					.queryParam("size", "5")
+					.queryParam(SearchConstant.SEARCH_QUERY.param, keyword)
+					.queryParam(SearchConstant.KAKAO_SEARCH_PAGE.param, page)
+					.queryParam(SearchConstant.KAKAO_SEARCH_PAGE_SIZE.param, CountConstant.SEARCH_SIZE_VALUE.count)
 					.build()
 			}
 			.accept(MediaType.APPLICATION_JSON)
@@ -66,25 +69,26 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 	/**
 	 * 네이버 검색 API
 	 */
-	suspend fun getNaverSearchResult(keyword: String, page: String, size: String): Mono<NaverResponse> {
+	suspend fun getNaverSearchResult(keyword: String, page: String, size: String): Mono<NaverResponse> = coroutineScope {
 
 		val headers = mapOf<String, String>(
-			"Host" to naverHost,
-			"X-Naver-Client-Id" to naverClientId,
-			"X-Naver-Client-Secret" to naverClientSecret)
-
+			SearchConstant.NAVER_SEARCH_HOST.param to naverHost,
+			SearchConstant.NAVER_SEARCH_CLIENTID.param to naverClientId,
+			SearchConstant.NAVER_SEARCH_CLIENTSECRET.param to naverClientSecret
+		)
 
 		val customWebClient = webClient.mutate()
 			.baseUrl(naverUrl)
 			.defaultHeaders { header -> header.setAll(headers) }
 			.build()
 
-		return customWebClient.get()
+
+		return@coroutineScope customWebClient.get()
 			.uri { uriBuilder ->
 				uriBuilder
-					.queryParam("query", keyword)
-					.queryParam("start", page)
-					.queryParam("display", "5")
+					.queryParam(SearchConstant.SEARCH_QUERY.param, keyword)
+					.queryParam(SearchConstant.NAVER_SEARCH_PAGE.param, page)
+					.queryParam(SearchConstant.NAVER_SEARCH_PAGE_SIZE.param, CountConstant.SEARCH_SIZE_VALUE.count)
 					.build()
 			}
 			.accept(MediaType.APPLICATION_JSON)
@@ -93,6 +97,7 @@ class SearchRepository(@Qualifier("customWebClient") private val webClient: WebC
 			.subscribeOn(Schedulers.parallel())
 			.onErrorResume { Mono.error(it) }
 			.switchIfEmpty(Mono.empty())
+
 	}
 
 }

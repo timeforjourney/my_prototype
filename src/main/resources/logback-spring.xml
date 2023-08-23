@@ -9,7 +9,7 @@
     <logger name = "org.springframework.web.reactive" level="info"/>
     <logger name = "org.reactivestreams" level="info"/>
     <logger name = "com.mytest.app" level="info"/>
-    <logger name = "reactor.core.scheduler" level="info"/>
+    <logger name = "reactor.core.publisher" level="debug"/>
     <logger name = "reactor.netty.channel" level="info"/>
     <logger name = "io.netty.resolver." level="info"/>
 <!--    <logger name = "io.lettuce.core" level="debug"/>-->

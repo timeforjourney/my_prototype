@@ -1,5 +1,14 @@
 
+http Request spec file 
+---
 
+    1. intellij 파일 : searchRequest.http
+    2. postman : /resources/postman 경로
+    예시) 
+    지도 검색 - GET http://localhost:8080/api/result?keyword=판교곱창&rank=myRank
+    검색 순위 - GET http://localhost:8080/api/zsetScores?key=myRank
+
+---
 
 적용한 추가 비기본 라이브러리 목록 : 
 --

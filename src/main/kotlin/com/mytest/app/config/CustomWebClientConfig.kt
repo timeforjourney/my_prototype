@@ -48,11 +48,10 @@ class CustomWebClientConfig {
 						.create()
 						.secure { sslContextSpec ->
 							sslContextSpec.sslContext(
-								SslContextBuilder.forClient().
-								trustManager(InsecureTrustManagerFactory.INSTANCE).build()
+								SslContextBuilder.forClient().trustManager(InsecureTrustManagerFactory.INSTANCE).build()
 							)
 						}
-						.responseTimeout(java.time.Duration.ofMillis(120000))
+						.responseTimeout(java.time.Duration.ofMillis(180000))
 				)
 			)
 			.exchangeStrategies(exchangeStrategies)

@@ -1,0 +1,9 @@
+GET http://localhost:8080/api/result?keyword=판교곱창&rank=myRank
+Accept: application/json
+
+
+### GET request with parameter
+GET http://localhost:8080/api/zsetScores?key=myRank
+Accept: application/json
+
+

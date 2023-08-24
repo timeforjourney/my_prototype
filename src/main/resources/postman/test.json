@@ -1,0 +1,67 @@
+{
+  "info": {
+    "_postman_id": "cdcb4c91-a772-472e-bcff-d64be0695013",
+    "name": "search_assignment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "1949449"
+  },
+  "item": [
+    {
+      "name": "searchResult",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/result?keyword=판교곱창&rank=myRank",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "result"
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "판교곱창"
+            },
+            {
+              "key": "rank",
+              "value": "myRank"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+
+    {
+      "name": "selectZsetScores",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/zsetScores?key=myRank",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "zsetScores"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "myRank"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

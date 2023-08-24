@@ -15,7 +15,6 @@ data class KakaoResponse(
 	@JsonIgnoreProperties(ignoreUnknown = true)
 	data class Document(
 
-//		@SerialName("place_name")
 		@JsonProperty("place_name")
 		val placeName : String
 	)

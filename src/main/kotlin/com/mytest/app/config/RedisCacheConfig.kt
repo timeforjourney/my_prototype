@@ -36,9 +36,7 @@ class RedisCacheConfig {
 		logger.info("lettuce factory  - host : {} , port :  {}", redisHost, redisPort)
 
 		val connectionFactory = LettuceConnectionFactory(RedisStandaloneConfiguration( redisHost,redisPort!!))
-//		connectionFactory.database = database!!
 		connectionFactory.afterPropertiesSet()
-//		connectionFactory.validateConnection()
 
 		return connectionFactory
 	}

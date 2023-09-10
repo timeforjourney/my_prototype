@@ -72,7 +72,7 @@ class SearchServiceImpl(
 	/**
 	 * redis 에서 검색어 순위, 스코어를 업데이트
 	 */
-	private suspend fun updateRedisRanking(keyword: String, rank: String): Mono<Boolean> {
+	suspend fun updateRedisRanking(keyword: String, rank: String): Mono<Boolean> {
 
 		return dataRedisRepository.getZSetScoreByValue(rank, keyword)
 			.flatMap {

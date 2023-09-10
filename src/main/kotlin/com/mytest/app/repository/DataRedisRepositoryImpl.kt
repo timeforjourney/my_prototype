@@ -17,11 +17,13 @@ class DataRedisRepositoryImpl(val redisOperations: ReactiveRedisOperations<Strin
 
 	override fun save(key: String, value: Int): Mono<Boolean> {
 		return redisOperations.opsForValue().set(key, value)
+//			.awaitFirstOrDefault(Mono.just(false))
 	}
 
 	override suspend fun get(key: String): Mono<Any> {
 		return redisOperations.opsForValue().get(key)
 			.subscribeOn(Schedulers.parallel())
+//			.awaitSingle()
 			.switchIfEmpty(Mono.empty())
 			.onErrorResume { Mono.error(it)  }
 	}
@@ -29,7 +31,7 @@ class DataRedisRepositoryImpl(val redisOperations: ReactiveRedisOperations<Strin
 	override suspend fun getAll(): Flux<Any> {
 
 		return redisOperations.keys("*")
-			.flatMap { redisOperations.opsForValue().get(it) }
+			.flatMap { redisOperations.opsForValue().get(it)}
 			.switchIfEmpty(Mono.empty())
 			.onErrorResume { Mono.error(it)}
 			.cast(Any::class.java)
@@ -46,7 +48,8 @@ class DataRedisRepositoryImpl(val redisOperations: ReactiveRedisOperations<Strin
 	 */
 	override fun incrementZSetKeyScore(rankKey: String, value: String): Mono<Double> {
 
-		return redisOperations.opsForZSet().incrementScore(rankKey, value, CountConstant.SEARCH_PLUS_COUNT.count.toDouble())
+		return redisOperations.opsForZSet()
+			.incrementScore(rankKey, value, CountConstant.SEARCH_PLUS_COUNT.count.toDouble())
 	}
 
 	/**
@@ -63,7 +66,8 @@ class DataRedisRepositoryImpl(val redisOperations: ReactiveRedisOperations<Strin
 	override suspend fun rangeZSetScores(key: String): Flux<Any> {
 
 
-		return redisOperations.opsForZSet().reverseRangeWithScores(key, Range.unbounded<Long>())
+		return redisOperations.opsForZSet()
+			.reverseRangeWithScores(key, Range.unbounded<Long>())
 			.switchIfEmpty(Mono.empty())
 			.onErrorResume { Mono.error(it) }
 			.cast(Any::class.java)

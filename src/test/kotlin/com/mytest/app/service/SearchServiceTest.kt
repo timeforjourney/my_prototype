@@ -1,56 +1,119 @@
 package com.mytest.app.service
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.mytest.app.TestUtils
+import com.mytest.app.domain.KakaoResponse
+import com.mytest.app.domain.NaverResponse
+import com.mytest.app.repository.DataRedisRepository
 import com.mytest.app.repository.SearchRepository
-import org.junit.jupiter.api.BeforeEach
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.BDDAssumptions.given
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.junit.jupiter.MockitoExtension
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebFlux
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.util.LinkedMultiValueMap
-import org.springframework.util.MultiValueMap
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 
-//@ExtendWith(MockitoExtension::class)
-@ExtendWith(SpringExtension::class)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@WebFluxTest
+//@WebFluxTest
 //@Import(SearchRepository::class)
-@AutoConfigureWebFlux
-class SearchServiceTest (
-   private val searchRepository: SearchRepository
-//   val objectMapper : ObjectMapper
-)  {
+//@AutoConfigureWebFlux
+//@AutoConfigureMockMvc
+//@ExtendWith(SpringExtension::class)
+//@ExtendWith(MockitoExtension::class)
+//@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
+//@WebFluxTest
+@SpringBootTest
+class SearchServiceTest @Autowired constructor(
 
-    val keyword = "판교노래방"
-    val page = "1"
-    val size = "10"
+	val searchService: SearchService,
+
+	val searchServiceImpl: SearchServiceImpl,
+
+) {
+
+	private val log = LoggerFactory.getLogger(this::class.java)
 
 
-    @Test
-    suspend fun sortSearchResult() {
+	private val mainThreadSurrogate = newSingleThreadContext("thread")
 
-        val kakaoList = searchRepository.getKakaoSearchResult(keyword, page, size)
-           .map { it.documents }
+//	@BeforeEach
+//	fun setUp() {
+//		Dispatchers.setMain(mainThreadSurrogate)
+//	}
+//
+//
+//	@AfterEach
+//	fun tearDown() {
+//		Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
+//		mainThreadSurrogate.close()
+//	}
 
-        val mapper = ObjectMapper().registerModule(JavaTimeModule())
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-        val result = mapper.writeValueAsString(kakaoList)
+	val keyword = "판교노래방"
+	val page = "1"
+	val size = "10"
 
-//        val result = objectMapper.writeValueAsString(kakaoList)
-        print("kakaoList : $result")
-    }
+
+	@Test
+	fun sortSearchResult() = runBlocking {
+
+		val rank = "random"
+
+		val search = searchService.sortSearchResult(keyword, rank, page, size).block()
+
+		val result = TestUtils.convertString(search)
+
+		println("kakaoList : $result")
+
+	}
+
+
+
+	@Test
+	fun mergeValuesFromWebClient() = runBlocking {
+
+
+		val kakao1 = KakaoResponse.Document("카카오노래방")
+		val kakao2 = KakaoResponse.Document("핑크노래방")
+		val kakao3 = KakaoResponse.Document("필노래방")
+		val kakao4 = KakaoResponse.Document("짱노래방")
+
+		val kakaoList = listOf(kakao1, kakao2, kakao3, kakao4)
+
+
+		val naver1 = NaverResponse.Item("카카오노래방")
+		val naver2 = NaverResponse.Item("세븐스타 노래방")
+		val naver3 = NaverResponse.Item("필노래방")
+		val naver4 = NaverResponse.Item("달빛노래연습장")
+
+		val naverList = listOf(naver1, naver2, naver3, naver4)
+
+		val mergeValiues = searchServiceImpl.mergeValuesFromWebClient(Mono.just(kakaoList), Mono.just(naverList)).block()
+
+		println("mergeValues : ${TestUtils.convertString(mergeValiues)}")
+
+	}
+
+
+	@Test
+	fun updateRedisRanking() = runBlocking {
+
+		val keyword = "판교노래방"
+		val rank = "random"
+
+		val result = searchServiceImpl.updateRedisRanking(keyword, rank).block()
+
+		println("result : $result")
+
+	}
+
+	@Test
+	fun test() {
+		println("test")
+	}
 
 }

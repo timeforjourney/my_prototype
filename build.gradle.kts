@@ -32,10 +32,17 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+//	implementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("io.projectreactor:reactor-test")
+//	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+//	testImplementation("io.projectreactor:reactor-test")
+
+//	testCompileOnly("org.junit.jupiter:junit-jupiter-api:5.3.1")
+//	testCompileOnly("org.junit.jupiter:junit-jupiter-params:5.3.1")
+//	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
 
 	compileOnly("io.projectreactor:reactor-tools:")
 }

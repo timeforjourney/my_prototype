@@ -20,6 +20,9 @@
 
     (base) > $ docker pull redis:7.2.0-alpine3.18
     (base) > $ docker-compose redis-docker-compose.yaml up -d
+     (잘안되면 : docker-compose -f redis-docker-compose.yaml up -d )  
+
+    (base) > $ docker exec -it redis_standalone redis-cli
 
 아래 redis 용 docker-compose 파일을 작성하여 실행한다. 
 

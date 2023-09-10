@@ -1,0 +1,31 @@
+
+server:
+  port: 8080
+
+spring.data.redis :
+  host: localhost
+  port: 6379
+  database: 0
+  lettuce:
+    shutdown-timeout: 1500
+#    pool:
+#      enabled: on
+
+
+openapi :
+  kakao :
+    url : https://dapi.kakao.com/v2/local/search/keyword.json
+    auth : KakaoAK 4b57f0e1f8d4b81a20b9fe45b7fdd682
+  naver:
+    url : https://openapi.naver.com/v1/search/local.json
+    host : openapi.naver.com
+    client-id : 6OqyW9SsVsdqXVX6BuYA
+    client-secret : l5wD2lNYzf
+
+
+
+
+
+
+
+

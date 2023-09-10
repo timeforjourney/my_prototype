@@ -26,7 +26,8 @@ class CustomWebClientConfig {
 	fun customWebClient(): WebClient {
 
 		val exchangeStrategies = ExchangeStrategies.builder()
-			.codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50) }
+			.codecs { configurer: ClientCodecConfigurer -> configurer.defaultCodecs()
+				.maxInMemorySize(1024 * 1024 * 50) }
 			.build()
 
 		/**

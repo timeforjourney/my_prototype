@@ -3,29 +3,15 @@ package com.mytest.app.service
 import com.mytest.app.TestUtils
 import com.mytest.app.domain.KakaoResponse
 import com.mytest.app.domain.NaverResponse
-import com.mytest.app.repository.DataRedisRepository
-import com.mytest.app.repository.SearchRepository
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.BDDAssumptions.given
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.context.SpringBootTest
 import reactor.core.publisher.Mono
-import reactor.core.scheduler.Schedulers
 
 
-//@WebFluxTest
-//@Import(SearchRepository::class)
-//@AutoConfigureWebFlux
-//@AutoConfigureMockMvc
-//@ExtendWith(SpringExtension::class)
-//@ExtendWith(MockitoExtension::class)
-//@TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
-//@WebFluxTest
 @SpringBootTest
 class SearchServiceTest @Autowired constructor(
 
